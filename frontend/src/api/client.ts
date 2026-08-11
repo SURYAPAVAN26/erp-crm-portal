@@ -1,12 +1,34 @@
 import axios from "axios";
 
-let rawApiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
-if (!rawApiUrl.startsWith("http://") && !rawApiUrl.startsWith("https://")) {
-  rawApiUrl = `https://${rawApiUrl}`;
+function resolveApiBaseUrl(): string {
+  const envUrl = import.meta.env.VITE_API_URL;
+  const isBrowser = typeof window !== "undefined";
+  const isLocal = isBrowser && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+  let url = envUrl;
+
+  // If in browser production environment and no production API URL is baked in or env is localhost
+  if (isBrowser && !isLocal && (!url || url.includes("localhost"))) {
+    if (window.location.hostname.includes("onrender.com")) {
+      const backendHost = window.location.hostname.replace("frontend", "backend");
+      url = `https://${backendHost}/api`;
+    } else {
+      url = `${window.location.origin}/api`;
+    }
+  }
+
+  if (!url) {
+    url = "http://localhost:4000/api";
+  }
+
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = `https://${url}`;
+  }
+
+  return url.endsWith("/api") ? url : `${url.replace(/\/$/, "")}/api`;
 }
-export const API_BASE_URL = rawApiUrl.endsWith("/api")
-  ? rawApiUrl
-  : `${rawApiUrl.replace(/\/$/, "")}/api`;
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
