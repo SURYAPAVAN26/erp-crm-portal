@@ -1,8 +1,9 @@
 services:
-  # Backend Express API Web Service
+  # Backend Express API Web Service (Free Tier)
   - type: web
     name: erp-crm-backend
     env: node
+    plan: free
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
     preDeployCommand: npx prisma migrate deploy
@@ -25,10 +26,11 @@ services:
           name: erp-crm-frontend
           property: host
 
-  # Frontend Vite React Static Site
+  # Frontend Vite React Static Site (Free)
   - type: web
     name: erp-crm-frontend
     env: static
+    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
@@ -44,7 +46,7 @@ services:
           property: host
 
 databases:
-  # Render Managed PostgreSQL Database
+  # Render Managed PostgreSQL Database (Free Tier)
   - name: erp-crm-db
     databaseName: erp_crm
     user: erp_crm_user
