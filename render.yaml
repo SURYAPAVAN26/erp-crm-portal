@@ -25,11 +25,10 @@ services:
           name: erp-crm-frontend
           property: host
 
-  # Frontend Vite React Static Site (Free)
+  # Frontend Vite React Static Site (Static sites on Render are free by default)
   - type: web
     name: erp-crm-frontend
     env: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
