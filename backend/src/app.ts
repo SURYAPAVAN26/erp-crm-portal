@@ -27,7 +27,15 @@ if (env.nodeEnv !== "test") {
   app.use(morgan(env.nodeEnv === "development" ? "dev" : "combined"));
 }
 
+app.get("/", (_req, res) => {
+  res.json({ success: true, message: "Mini ERP + CRM Operations Portal API Server", timestamp: new Date().toISOString() });
+});
+
 app.get("/health", (_req, res) => {
+  res.json({ success: true, message: "OK", timestamp: new Date().toISOString() });
+});
+
+app.get("/api/health", (_req, res) => {
   res.json({ success: true, message: "OK", timestamp: new Date().toISOString() });
 });
 

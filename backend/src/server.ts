@@ -26,7 +26,7 @@ async function ensureSeed() {
 }
 
 function main() {
-  app.listen(env.port, () => {
+  app.listen(env.port, "0.0.0.0", () => {
     console.log(`Server running on port ${env.port} [${env.nodeEnv}]`);
     prisma
       .$connect()
