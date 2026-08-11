@@ -7,22 +7,31 @@ function resolveApiBaseUrl(): string {
 
   let url = envUrl;
 
-  // If in browser production environment and no production API URL is baked in or env is localhost
-  if (isBrowser && !isLocal && (!url || url.includes("localhost"))) {
-    if (window.location.hostname.includes("onrender.com")) {
-      const backendHost = window.location.hostname.replace("frontend", "backend");
-      url = `https://${backendHost}/api`;
-    } else {
-      url = `${window.location.origin}/api`;
-    }
+  // 1. If in browser on Render production site, derive public backend URL from current domain
+  if (isBrowser && !isLocal && window.location.hostname.includes("onrender.com")) {
+    const backendHost = window.location.hostname.replace("frontend", "backend");
+    url = `https://${backendHost}/api`;
   }
 
+  // 2. Fallback to default localhost if unassigned
   if (!url) {
     url = "http://localhost:4000/api";
   }
 
+  // 3. Ensure protocol
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
     url = `https://${url}`;
+  }
+
+  // 4. Fix internal render hostname missing .onrender.com
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname.includes(".") && !parsed.hostname.includes("localhost")) {
+      parsed.hostname = `${parsed.hostname}.onrender.com`;
+      url = parsed.toString();
+    }
+  } catch (_) {
+    // ignore parse error fallback
   }
 
   return url.endsWith("/api") ? url : `${url.replace(/\/$/, "")}/api`;
