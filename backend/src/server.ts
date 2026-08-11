@@ -1,7 +1,6 @@
 import app from "./app";
 import { env } from "./config/env";
 import { prisma } from "./config/prisma";
-
 import bcrypt from "bcryptjs";
 
 async function ensureSeed() {
@@ -26,18 +25,19 @@ async function ensureSeed() {
   }
 }
 
-async function main() {
-  await prisma.$connect();
-  await ensureSeed();
+function main() {
   app.listen(env.port, () => {
-    console.log(`Server running on http://localhost:${env.port} [${env.nodeEnv}]`);
+    console.log(`Server running on port ${env.port} [${env.nodeEnv}]`);
+    prisma
+      .$connect()
+      .then(() => ensureSeed())
+      .catch((err) => {
+        console.error("Failed to connect to database on startup:", err);
+      });
   });
 }
 
-main().catch((err) => {
-  console.error("Failed to start server:", err);
-  process.exit(1);
-});
+main();
 
 process.on("SIGTERM", async () => {
   await prisma.$disconnect();
