@@ -23,7 +23,7 @@ services:
         fromService:
           type: web
           name: erp-crm-frontend
-          property: url
+          property: host
 
   # Frontend Vite React Static Site
   - type: web
@@ -41,7 +41,7 @@ services:
         fromService:
           type: web
           name: erp-crm-backend
-          property: url
+          property: host
 
 databases:
   # Render Managed PostgreSQL Database

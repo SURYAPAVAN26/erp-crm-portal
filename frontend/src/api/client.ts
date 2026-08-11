@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const rawApiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+let rawApiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
+if (!rawApiUrl.startsWith("http://") && !rawApiUrl.startsWith("https://")) {
+  rawApiUrl = `https://${rawApiUrl}`;
+}
 export const API_BASE_URL = rawApiUrl.endsWith("/api")
   ? rawApiUrl
   : `${rawApiUrl.replace(/\/$/, "")}/api`;

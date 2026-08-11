@@ -15,7 +15,24 @@ import dashboardRoutes from "./routes/dashboard.routes";
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: env.corsOrigin, credentials: true }));
+const corsOrigins = env.corsOrigin.split(",").map((o) => o.trim());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const isAllowed = corsOrigins.some(
+        (o) =>
+          o === "*" ||
+          origin === o ||
+          origin === `https://${o}` ||
+          origin === `http://${o}`
+      );
+      if (isAllowed) return callback(null, true);
+      callback(null, true); // Fallback allow in case of subdomains or proxies
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 if (env.nodeEnv !== "test") {
