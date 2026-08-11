@@ -59,6 +59,9 @@ apiClient.interceptors.response.use(
 
 export function getErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
+    if (err.message === "Network Error" || !err.response) {
+      return `Network Error: Unable to reach API at [${API_BASE_URL}]. If backend is starting up (Render free tier cold start), please wait 15-20 seconds and click Sign In again.`;
+    }
     return err.response?.data?.message ?? err.message ?? "Something went wrong";
   }
   return "Something went wrong";
