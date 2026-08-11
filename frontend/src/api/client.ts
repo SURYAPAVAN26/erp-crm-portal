@@ -7,23 +7,17 @@ function resolveApiBaseUrl(): string {
 
   let url = envUrl;
 
-  // 1. If in browser on Render production site, derive public backend URL from current domain
-  if (isBrowser && !isLocal && window.location.hostname.includes("onrender.com")) {
-    const backendHost = window.location.hostname.replace("frontend", "backend");
-    url = `https://${backendHost}/api`;
+  // Only fallback if envUrl is missing or points to localhost when running in production browser
+  if (!url || (isBrowser && !isLocal && url.includes("localhost"))) {
+    url = "https://erp-crm-backend.onrender.com/api";
   }
 
-  // 2. Fallback to default localhost if unassigned
-  if (!url) {
-    url = "http://localhost:4000/api";
-  }
-
-  // 3. Ensure protocol
+  // Ensure protocol
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
     url = `https://${url}`;
   }
 
-  // 4. Fix internal render hostname missing .onrender.com
+  // Ensure .onrender.com suffix if host has no domain extension
   try {
     const parsed = new URL(url);
     if (!parsed.hostname.includes(".") && !parsed.hostname.includes("localhost")) {
