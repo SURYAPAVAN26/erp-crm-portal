@@ -207,6 +207,8 @@ Steps for Render (example):
 
 AWS deployment (EC2 + RDS) follows the same pattern: provision an RDS Postgres instance, run the same build/start commands on an EC2 instance (or behind PM2 / a Docker container), and serve the frontend build via S3 + CloudFront or a small Nginx server. This was treated as the bonus/optional path per the assignment brief and not set up by default to avoid incurring any cost.
 
+https://erp-crm-frontend-t07m.onrender.com/
+
 ---
 
 ## 8. Architecture Notes
